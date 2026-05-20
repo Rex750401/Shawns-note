@@ -6,12 +6,22 @@
     <title>⭐ 軒軒的成長筆記-電子登記系統 ⭐</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .custom-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fee2e2' fill-opacity='0.4'%3E%3Cpath d='M30 15V0H0v30h15v30h30V30h15V0H30zm0 15H15V15h15v15zm15 0H30V15h15v15zM15 45h15V30H15v15zm30 0H30V30h15v15z'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: 30px 30px;
+        }
+    </style>
 </head>
-<body class="bg-amber-50 min-h-screen py-6 px-4 font-sans">
+<body class="bg-amber-50 min-h-screen py-6 px-4 font-sans custom-pattern">
 
-    <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-4 border-orange-400 overflow-hidden">
-        <!-- 頁首 -->
-        <div class="bg-gradient-to-r content-center from-purple-500 to-pink-500 p-6 text-center text-white">
+    <div class="max-w-md mx-auto bg-white rounded-3xl shadow-xl border-4 border-orange-400 overflow-hidden relative">
+        <!-- 頁首與設定按鈕 -->
+        <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-center text-white relative">
+            <!-- 設定齒輪 -->
+            <button id="openSettings" type="button" class="absolute top-4 right-4 text-white hover:text-yellow-200 transition text-xl">
+                <i class="fa-solid fa-gear"></i>
+            </button>
             <h1 class="text-2xl font-bold tracking-wide">⭐ 軒軒的成長筆記 ⭐</h1>
             <p class="text-sm opacity-90 mt-1">小小責任家每日電子登記系統</p>
         </div>
@@ -26,7 +36,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">本日亮點 (Notion標題)</label>
-                    <input type="text" id="todayHighlight" placeholder="例如：自己穿衣大成功！" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none" required>
+                    <input type="text" id="todayHighlight" placeholder="例如：自己穿衣服大成功！" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none" required>
                 </div>
             </div>
 
@@ -78,10 +88,16 @@
                 </div>
             </div>
 
-            <!-- 星星即時統計 -->
-            <div class="bg-yellow-100 border-2 border-yellow-300 rounded-xl p-4 flex justify-between items-center">
-                <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-calculator text-amber-500 mr-1"></i> 今日獲得星星：</span>
-                <span id="todayTotal" class="text-3xl font-black text-orange-600">0 ⭐</span>
+            <!-- 星星與總累積即時統計 -->
+            <div class="space-y-2">
+                <div class="bg-yellow-100 border-2 border-yellow-300 rounded-xl p-4 flex justify-between items-center">
+                    <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-calculator text-amber-500 mr-1"></i> 今日獲得星星：</span>
+                    <span id="todayTotal" class="text-3xl font-black text-orange-600">0 ⭐</span>
+                </div>
+                <div class="bg-blue-100 border-2 border-blue-300 rounded-xl p-4 flex justify-between items-center">
+                    <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-chart-line text-blue-500 mr-1"></i> 上傳後總累積星星將為：</span>
+                    <span id="predictedTotal" class="text-2xl font-black text-blue-600">0 ⭐</span>
+                </div>
             </div>
 
             <!-- 不當行為引導紀錄 -->
@@ -90,7 +106,7 @@
                     <i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> 今日行為引導 (若無則免填)
                 </h2>
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">例如：吃飯玩食物 -> 執行收走後果</label>
+                    <label class="block text-sm font-medium text-gray-700 text-xs">例如：吃飯玩食物 -> 執行收走後果</label>
                     <textarea id="badBehaviorLog" rows="2" placeholder="今天有需要引導的地方嗎？" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-red-500 outline-none text-sm"></textarea>
                 </div>
             </div>
@@ -98,75 +114,211 @@
             <!-- 父母讚美與重點 -->
             <div>
                 <h2 class="text-lg font-bold text-indigo-700 mb-3 border-b-2 border-indigo-200 pb-1">
-                    <i class="fa-solid fa-heart text-pink-500 mr-1"></i> 讚美事項 (對齊 Notion 欄位)
+                    <i class="fa-solid fa-heart text-pink-500 mr-1"></i> 讚美事項
                 </h2>
                 <textarea id="parentNotes" rows="2" placeholder="寫下今天軒軒最棒的地方，這會同步到 Notion 喔！" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 outline-none text-sm"></textarea>
             </div>
 
             <!-- 提交按鈕 -->
-            <button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-lg hover:from-purple-600 hover:to-pink-600 transition transform active:scale-95 text-lg">
-                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> 上傳紀錄至 Notion
+            <button type="submit" id="submitBtn" class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-lg hover:from-purple-600 hover:to-pink-600 transition transform active:scale-95 text-lg flex items-center justify-center">
+                <i class="fa-solid fa-cloud-arrow-up mr-2"></i> 上傳紀錄至 Notion
             </button>
         </form>
     </div>
 
+    <!-- === 設定彈窗 (Settings Modal) === -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 border-4 border-purple-400">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b">
+                <h3 class="text-lg font-bold text-purple-700"><i class="fa-solid fa-gears mr-1"></i> 系統連線設定</h3>
+                <button id="closeSettings" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Make Webhook 網址</label>
+                    <input type="text" id="webhookUrl" placeholder="https://hook.us1.make.com/..." class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none text-xs">
+                    <p class="text-xs text-gray-400 mt-1">請貼上從 Make.com 取得的 Webhook 網址。</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">目前已累積星星數 (基準)</label>
+                    <input type="number" id="baseStars" min="0" value="0" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none">
+                    <p class="text-xs text-gray-400 mt-1">此數值代表今日之前軒軒已累積的星星，將自動加上今日星星上傳。</p>
+                </div>
+                <button id="saveSettings" class="w-full py-2 bg-purple-600 text-white font-bold rounded-lg shadow hover:bg-purple-700 transition">
+                    儲存設定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === 通知彈窗 (Notification Modal) === -->
+    <div id="notifModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-xs rounded-2xl shadow-2xl p-6 text-center border-4" id="notifBorder">
+            <div id="notifIcon" class="text-5xl mb-3"></div>
+            <h3 id="notifTitle" class="text-xl font-bold mb-2"></h3>
+            <p id="notifMsg" class="text-gray-600 text-sm mb-4"></p>
+            <button id="closeNotif" class="px-6 py-2 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-700 transition">
+                確定
+            </button>
+        </div>
+    </div>
+
     <script>
-        // 自動將日期欄位帶入今天
+        // 初始化載入
         document.getElementById('logDate').valueAsDate = new Date();
 
-        // 即時計算星星數量的邏輯
+        // 讀取/寫入本機設定
+        const STORAGE_KEYS = {
+            WEBHOOK: 'xuan_webhook_url',
+            BASE_STARS: 'xuan_base_stars'
+        };
+
+        // 綁定 DOM 元素
+        const openSettingsBtn = document.getElementById('openSettings');
+        const closeSettingsBtn = document.getElementById('closeSettings');
+        const settingsModal = document.getElementById('settingsModal');
+        const webhookInput = document.getElementById('webhookUrl');
+        const baseStarsInput = document.getElementById('baseStars');
+        const saveSettingsBtn = document.getElementById('saveSettings');
+
+        const notifModal = document.getElementById('notifModal');
+        const notifBorder = document.getElementById('notifBorder');
+        const notifIcon = document.getElementById('notifIcon');
+        const notifTitle = document.getElementById('notifTitle');
+        const notifMsg = document.getElementById('notifMsg');
+        const closeNotifBtn = document.getElementById('closeNotif');
+
         const checkboxes = document.querySelectorAll('.behavior-checkbox');
         const extraStarsInput = document.getElementById('extraStars');
         const todayTotalDisplay = document.getElementById('todayTotal');
+        const predictedTotalDisplay = document.getElementById('predictedTotal');
+        const logForm = document.getElementById('logForm');
+        const submitBtn = document.getElementById('submitBtn');
 
+        // 載入本地設定
+        function loadSettings() {
+            webhookInput.value = localStorage.getItem(STORAGE_KEYS.WEBHOOK) || '';
+            baseStarsInput.value = localStorage.getItem(STORAGE_KEYS.BASE_STARS) || '0';
+            calculateStars();
+        }
+
+        // 開關設定彈窗
+        openSettingsBtn.addEventListener('click', () => {
+            loadSettings();
+            settingsModal.classList.remove('hidden');
+        });
+        closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+
+        // 儲存設定
+        saveSettingsBtn.addEventListener('click', () => {
+            localStorage.setItem(STORAGE_KEYS.WEBHOOK, webhookInput.value.trim());
+            localStorage.setItem(STORAGE_KEYS.BASE_STARS, baseStarsInput.value || '0');
+            settingsModal.classList.add('hidden');
+            calculateStars();
+            showNotification('success', '設定已儲存', '您的連線與點數基準已安全地儲存在本機中。');
+        });
+
+        // 顯示自訂通知
+        function showNotification(type, title, message) {
+            notifTitle.innerText = title;
+            notifMsg.innerText = message;
+            
+            if (type === 'success') {
+                notifBorder.className = "bg-white w-full max-w-xs rounded-2xl shadow-2xl p-6 text-center border-4 border-green-400";
+                notifIcon.innerHTML = "🎉";
+                notifIcon.className = "text-5xl mb-3 text-green-500";
+            } else if (type === 'error') {
+                notifBorder.className = "bg-white w-full max-w-xs rounded-2xl shadow-2xl p-6 text-center border-4 border-red-400";
+                notifIcon.innerHTML = "⚠️";
+                notifIcon.className = "text-5xl mb-3 text-red-500";
+            } else {
+                notifBorder.className = "bg-white w-full max-w-xs rounded-2xl shadow-2xl p-6 text-center border-4 border-blue-400";
+                notifIcon.innerHTML = "ℹ️";
+                notifIcon.className = "text-5xl mb-3 text-blue-500";
+            }
+            notifModal.classList.remove('hidden');
+        }
+
+        closeNotifBtn.addEventListener('click', () => notifModal.classList.add('hidden'));
+
+        // 星星即時計算
         function calculateStars() {
-            let total = 0;
+            let todayTotal = 0;
             checkboxes.forEach(cb => {
-                if (cb.checked) total += parseInt(cb.value);
+                if (cb.checked) todayTotal += parseInt(cb.value);
             });
-            total += parseInt(extraStarsInput.value) || 0;
-            todayTotalDisplay.innerText = total + " ⭐";
-            return total;
+            todayTotal += parseInt(extraStarsInput.value) || 0;
+            todayTotalDisplay.innerText = todayTotal + " ⭐";
+
+            const baseStars = parseInt(localStorage.getItem(STORAGE_KEYS.BASE_STARS)) || 0;
+            const newTotal = baseStars + todayTotal;
+            predictedTotalDisplay.innerText = newTotal + " ⭐";
+
+            return { todayTotal, newTotal };
         }
 
         checkboxes.forEach(cb => cb.addEventListener('change', calculateStars));
         extraStarsInput.addEventListener('input', calculateStars);
 
-        // 表單提交與對接 Notion API 的區塊
-        document.getElementById('logForm').addEventListener('submit', function(e) {
+        // 表單提交
+        logForm.addEventListener('submit', function(e) {
             e.preventDefault();
+
+            const webhookUrl = localStorage.getItem(STORAGE_KEYS.WEBHOOK);
+            if (!webhookUrl) {
+                showNotification('error', '請先完成設定', '請點擊右上角「齒輪」按鈕，設定您的 Make Webhook 網址。');
+                return;
+            }
+
+            const starData = calculateStars();
             
-            const totalStars = calculateStars();
-            
-            // 這裡的 Key 值已經修改為與您的 Notion 欄位名稱一模一樣！
+            // 完美符合您 Notion 的資料格式
             const formData = {
                 "日期": document.getElementById('logDate').value,
                 "本日亮點": document.getElementById('todayHighlight').value,
-                "今日獲得星星": totalStars,
-                "行為引導": document.getElementById('badBehaviorLog').value,
-                "讚美事項": document.getElementById('parentNotes').value
+                "今日獲得星星": starData.todayTotal,
+                "總累積星星": starData.newTotal,
+                "行為引導": document.getElementById('badBehaviorLog').value.trim(),
+                "讚美事項": document.getElementById('parentNotes').value.trim()
             };
 
-            alert('正在將資料傳送至 Notion...\n\n傳送內容：' + 
-                  '\n📅 日期: ' + formData["日期"] + 
-                  '\n✨ 本日亮點: ' + formData["本日亮點"] + 
-                  '\n⭐ 今日獲得星星: ' + formData["今日獲得星星"] + ' 顆' +
-                  '\n⚠️ 行為引導: ' + (formData["行為引導"] ? formData["行為引導"] : "無") +
-                  '\n❤️ 讚美事項: ' + (formData["讚美事項"] ? formData["讚美事項"] : "無")
-            );
+            // 進入 loading 狀態
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 正在傳送至 Notion...';
 
-            /* --- Notion API / Make.com 對接代碼 ---
-               將下面 'YOUR_MAKE_WEBHOOK_URL' 替換成您在 Make.com 申請到的 Webhook 網址即可！
-               
-               fetch('YOUR_MAKE_WEBHOOK_URL', {
-                   method: 'POST',
-                   headers: { 'Content-Type': 'application/json' },
-                   body: JSON.stringify(formData)
-               })
-               .then(res => alert('🎉 成功同步到 軒軒的 Notion 成長筆記！'))
-               .catch(err => alert('❌ 同步失敗，請檢查網路設定。'));
-            */
+            // 串接 Make Webhook
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // 自動更新累計星星的基底
+                    localStorage.setItem(STORAGE_KEYS.BASE_STARS, starData.newTotal);
+                    
+                    showNotification('success', '成功上傳！', '軒軒的今日紀錄已成功儲存到 Notion 囉！');
+                    
+                    // 重設表單
+                    logForm.reset();
+                    document.getElementById('logDate').valueAsDate = new Date();
+                    calculateStars();
+                } else {
+                    throw new Error('伺服器回應錯誤');
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                showNotification('error', '傳送失敗', '連線異常，請確認您的 Make Webhook 網址是否正確，且 Make 專案正在啟動狀態。');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> 上傳紀錄至 Notion';
+            });
         });
+
+        // 初始執行一次
+        loadSettings();
     </script>
 </body>
 </html>
