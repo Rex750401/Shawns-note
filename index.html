@@ -18,7 +18,6 @@
     <div class="max-w-md mx-auto bg-white rounded-3xl shadow-xl border-4 border-orange-400 overflow-hidden relative">
         <!-- 頁首與設定按鈕 -->
         <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-center text-white relative">
-            <!-- 設定齒輪 -->
             <button id="openSettings" type="button" class="absolute top-4 right-4 text-white hover:text-yellow-200 transition text-xl">
                 <i class="fa-solid fa-gear"></i>
             </button>
@@ -46,7 +45,6 @@
                     <i class="fa-solid fa-star text-yellow-500 mr-1"></i> 良好行為紀錄 (完成請勾選)
                 </h2>
                 <div class="space-y-3" id="goodBehaviors">
-                    <!-- 自理項目 -->
                     <label class="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-100 transition">
                         <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
                         <span class="ml-3 text-sm font-medium text-gray-700">1. 早上自己穿好衣服 (+1⭐)</span>
@@ -67,7 +65,6 @@
                         <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
                         <span class="ml-3 text-sm font-medium text-gray-700">5. 將髒衣服放入洗衣籃 (+1⭐)</span>
                     </label>
-                    <!-- 情緒社交 -->
                     <label class="flex items-center p-3 bg-pink-50 rounded-xl border border-pink-200 cursor-pointer hover:bg-pink-100 transition">
                         <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
                         <span class="ml-3 text-sm font-medium text-gray-700">6. 用語言表達需求/沒哭鬧 (+1⭐)</span>
@@ -80,7 +77,6 @@
                         <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
                         <span class="ml-3 text-sm font-medium text-gray-700">8. 接受輸了遊戲不發脾氣 (+1⭐)</span>
                     </label>
-                    <!-- 額外加分 -->
                     <div class="pt-2">
                         <label class="block text-sm font-bold text-gray-700 mb-1">額外表現加分（手動輸入星星數）</label>
                         <input type="number" id="extraStars" min="0" value="0" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none">
@@ -88,25 +84,69 @@
                 </div>
             </div>
 
+            <!-- 獎勵兌換扣點區 (已修改為最新獎勵清單) -->
+            <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 space-y-3">
+                <h3 class="text-md font-bold text-red-700 flex items-center">
+                    <i class="fa-solid fa-gift mr-1.5 text-red-500"></i> 🎁 獎勵兌換與扣點設定
+                </h3>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">選擇要兌換的獎勵</label>
+                        <select id="rewardPreset" class="w-full p-2 border-2 border-red-300 rounded-lg focus:border-red-500 outline-none bg-white text-sm">
+                            <option value="none" data-stars="0">-- 今天沒有兌換獎勵 --</option>
+                            
+                            <!-- 💡 提示：若您未來想增刪項目，只需複製下方任一行，並修改 data-stars(扣星數) 與文字內容即可 -->
+                            <optgroup label="✨ 小獎勵 (5-15 顆星)">
+                                
+                                <option value="snack" data-stars="10">🍬 【10⭐】兌換一份美味小點心</option>
+                                <option value="cartoon" data-stars="10">📺 【15⭐】看 15 分鐘 IPAD/電視</option>
+                                <option value="icecream" data-stars="15">🍦 【15⭐】兌換一球冰淇淋</option>
+                                <option value="toy_small" data-stars="15">🚗 【15⭐】兌換一份小玩具</option>
+                            </optgroup>
+
+                            <optgroup label="🎁 大獎勵 (30-50 顆星)">
+                                <option value="dinner" data-stars="30">🍕 【30⭐】決定今天晚餐吃什麼</option>
+                                <option value="sleep" data-stars="30">⏰ 【30⭐】延長 30 分鐘遊戲時間 / 晚睡</option>
+                                <option value="picnic" data-stars="30">🧺 【30⭐】看 30 分鐘 IPAD/電視</option>
+                                <option value="park" data-stars="50">🎡 【50⭐】去親子館或遊樂園玩一次</option>                                
+                            </optgroup>
+                            
+                            <option value="custom" data-stars="0">✏️ 自訂其他獎勵 (手動填寫項目與扣點)</option>
+                        </select>
+                    </div>
+
+                    <!-- 自訂獎勵輸入框 (選擇自訂時顯示) -->
+                    <div id="customRewardGroup" class="hidden">
+                        <label class="block text-xs font-bold text-gray-600 mb-1">自訂獎勵名稱</label>
+                        <input type="text" id="customRewardName" placeholder="例如：去便利商店買軟糖" class="w-full p-2 border-2 border-red-300 rounded-lg focus:border-red-500 outline-none text-sm bg-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">扣除星星數量 (⭐)</label>
+                        <input type="number" id="deductStars" min="0" value="0" class="w-full p-2 border-2 border-red-300 rounded-lg focus:border-red-500 outline-none font-bold text-red-600 bg-white">
+                    </div>
+                </div>
+            </div>
+
             <!-- 星星與總累積即時統計 -->
             <div class="space-y-2">
                 <div class="bg-yellow-100 border-2 border-yellow-300 rounded-xl p-4 flex justify-between items-center">
-                    <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-calculator text-amber-500 mr-1"></i> 今日獲得星星：</span>
+                    <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-calculator text-amber-500 mr-1"></i> 今日淨得星星：</span>
                     <span id="todayTotal" class="text-3xl font-black text-orange-600">0 ⭐</span>
                 </div>
                 <div class="bg-blue-100 border-2 border-blue-300 rounded-xl p-4 flex justify-between items-center">
-                    <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-chart-line text-blue-500 mr-1"></i> 上傳後總累積星星將為：</span>
+                    <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-chart-line text-blue-500 mr-1"></i> 上傳後總累積星星：</span>
                     <span id="predictedTotal" class="text-2xl font-black text-blue-600">0 ⭐</span>
                 </div>
             </div>
 
-            <!-- 不當行為引導紀錄 -->
+            <!-- 今日行為引導 -->
             <div>
                 <h2 class="text-lg font-bold text-red-700 mb-3 border-b-2 border-red-200 pb-1">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> 今日行為引導 (若無則免填)
                 </h2>
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 text-xs">例如：吃飯玩食物 -> 執行收走後果</label>
                     <textarea id="badBehaviorLog" rows="2" placeholder="今天有需要引導的地方嗎？" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-red-500 outline-none text-sm"></textarea>
                 </div>
             </div>
@@ -116,7 +156,7 @@
                 <h2 class="text-lg font-bold text-indigo-700 mb-3 border-b-2 border-indigo-200 pb-1">
                     <i class="fa-solid fa-heart text-pink-500 mr-1"></i> 讚美事項
                 </h2>
-                <textarea id="parentNotes" rows="2" placeholder="寫下今天軒軒最棒的地方，這會同步到 Notion 喔！" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 outline-none text-sm"></textarea>
+                <textarea id="parentNotes" rows="2" placeholder="寫下今天軒軒最棒的地方..." class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 outline-none text-sm"></textarea>
             </div>
 
             <!-- 提交按鈕 -->
@@ -126,7 +166,7 @@
         </form>
     </div>
 
-    <!-- === 設定彈窗 (Settings Modal) === -->
+    <!-- 設定彈窗 -->
     <div id="settingsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 border-4 border-purple-400">
             <div class="flex justify-between items-center mb-4 pb-2 border-b">
@@ -137,12 +177,10 @@
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">Make Webhook 網址</label>
                     <input type="text" id="webhookUrl" placeholder="https://hook.us1.make.com/..." class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none text-xs">
-                    <p class="text-xs text-gray-400 mt-1">請貼上從 Make.com 取得的 Webhook 網址。</p>
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">目前已累積星星數 (基準)</label>
                     <input type="number" id="baseStars" min="0" value="0" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none">
-                    <p class="text-xs text-gray-400 mt-1">此數值代表今日之前軒軒已累積的星星，將自動加上今日星星上傳。</p>
                 </div>
                 <button id="saveSettings" class="w-full py-2 bg-purple-600 text-white font-bold rounded-lg shadow hover:bg-purple-700 transition">
                     儲存設定
@@ -151,7 +189,7 @@
         </div>
     </div>
 
-    <!-- === 通知彈窗 (Notification Modal) === -->
+    <!-- 通知彈窗 -->
     <div id="notifModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white w-full max-w-xs rounded-2xl shadow-2xl p-6 text-center border-4" id="notifBorder">
             <div id="notifIcon" class="text-5xl mb-3"></div>
@@ -164,16 +202,13 @@
     </div>
 
     <script>
-        // 初始化載入
         document.getElementById('logDate').valueAsDate = new Date();
 
-        // 讀取/寫入本機設定
         const STORAGE_KEYS = {
             WEBHOOK: 'xuan_webhook_url',
             BASE_STARS: 'xuan_base_stars'
         };
 
-        // 綁定 DOM 元素
         const openSettingsBtn = document.getElementById('openSettings');
         const closeSettingsBtn = document.getElementById('closeSettings');
         const settingsModal = document.getElementById('settingsModal');
@@ -190,75 +225,95 @@
 
         const checkboxes = document.querySelectorAll('.behavior-checkbox');
         const extraStarsInput = document.getElementById('extraStars');
+        
+        // 兌換獎勵連動元素
+        const rewardPresetSelect = document.getElementById('rewardPreset');
+        const customRewardGroup = document.getElementById('customRewardGroup');
+        const customRewardNameInput = document.getElementById('customRewardName');
+        const deductStarsInput = document.getElementById('deductStars');
+        
         const todayTotalDisplay = document.getElementById('todayTotal');
         const predictedTotalDisplay = document.getElementById('predictedTotal');
         const logForm = document.getElementById('logForm');
         const submitBtn = document.getElementById('submitBtn');
 
-        // 載入本地設定
         function loadSettings() {
             webhookInput.value = localStorage.getItem(STORAGE_KEYS.WEBHOOK) || '';
             baseStarsInput.value = localStorage.getItem(STORAGE_KEYS.BASE_STARS) || '0';
             calculateStars();
         }
 
-        // 開關設定彈窗
-        openSettingsBtn.addEventListener('click', () => {
-            loadSettings();
-            settingsModal.classList.remove('hidden');
-        });
+        openSettingsBtn.addEventListener('click', () => { loadSettings(); settingsModal.classList.remove('hidden'); });
         closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
 
-        // 儲存設定
         saveSettingsBtn.addEventListener('click', () => {
             localStorage.setItem(STORAGE_KEYS.WEBHOOK, webhookInput.value.trim());
             localStorage.setItem(STORAGE_KEYS.BASE_STARS, baseStarsInput.value || '0');
             settingsModal.classList.add('hidden');
             calculateStars();
-            showNotification('success', '設定已儲存', '您的連線與點數基準已安全地儲存在本機中。');
+            showNotification('success', '設定已儲存', '您的連線與點數基準已成功更新。');
         });
 
-        // 顯示自訂通知
         function showNotification(type, title, message) {
             notifTitle.innerText = title;
             notifMsg.innerText = message;
-            
             if (type === 'success') {
                 notifBorder.className = "bg-white w-full max-w-xs rounded-2xl shadow-2xl p-6 text-center border-4 border-green-400";
                 notifIcon.innerHTML = "🎉";
                 notifIcon.className = "text-5xl mb-3 text-green-500";
-            } else if (type === 'error') {
+            } else {
                 notifBorder.className = "bg-white w-full max-w-xs rounded-2xl shadow-2xl p-6 text-center border-4 border-red-400";
                 notifIcon.innerHTML = "⚠️";
                 notifIcon.className = "text-5xl mb-3 text-red-500";
-            } else {
-                notifBorder.className = "bg-white w-full max-w-xs rounded-2xl shadow-2xl p-6 text-center border-4 border-blue-400";
-                notifIcon.innerHTML = "ℹ️";
-                notifIcon.className = "text-5xl mb-3 text-blue-500";
             }
             notifModal.classList.remove('hidden');
         }
 
         closeNotifBtn.addEventListener('click', () => notifModal.classList.add('hidden'));
 
-        // 星星即時計算
+        // 獎勵選單變動處理
+        rewardPresetSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const autoStars = parseInt(selectedOption.getAttribute('data-stars')) || 0;
+            
+            if (this.value === 'custom') {
+                // 顯示自訂輸入欄位
+                customRewardGroup.classList.remove('hidden');
+                deductStarsInput.value = 0;
+                deductStarsInput.readOnly = false;
+            } else {
+                // 隱藏自訂輸入欄位並自動帶入數值
+                customRewardGroup.classList.add('hidden');
+                customRewardNameInput.value = '';
+                deductStarsInput.value = autoStars;
+                deductStarsInput.readOnly = (this.value !== 'none');
+            }
+            calculateStars();
+        });
+
+        // 星星即時計算 (賺取 - 扣除)
         function calculateStars() {
-            let todayTotal = 0;
+            let earnStars = 0;
             checkboxes.forEach(cb => {
-                if (cb.checked) todayTotal += parseInt(cb.value);
+                if (cb.checked) earnStars += parseInt(cb.value);
             });
-            todayTotal += parseInt(extraStarsInput.value) || 0;
-            todayTotalDisplay.innerText = todayTotal + " ⭐";
+            earnStars += parseInt(extraStarsInput.value) || 0;
+            
+            const deductStars = parseInt(deductStarsInput.value) || 0;
+            const netTodayStars = earnStars - deductStars; // 今日淨得 (可能為負數)
+            
+            todayTotalDisplay.innerText = (netTodayStars >= 0 ? "+" : "") + netTodayStars + " ⭐";
 
             const baseStars = parseInt(localStorage.getItem(STORAGE_KEYS.BASE_STARS)) || 0;
-            const newTotal = baseStars + todayTotal;
+            const newTotal = baseStars + netTodayStars;
             predictedTotalDisplay.innerText = newTotal + " ⭐";
 
-            return { todayTotal, newTotal };
+            return { todayTotal: netTodayStars, newTotal, deductStars };
         }
 
         checkboxes.forEach(cb => cb.addEventListener('change', calculateStars));
         extraStarsInput.addEventListener('input', calculateStars);
+        deductStarsInput.addEventListener('input', calculateStars);
 
         // 表單提交
         logForm.addEventListener('submit', function(e) {
@@ -266,27 +321,43 @@
 
             const webhookUrl = localStorage.getItem(STORAGE_KEYS.WEBHOOK);
             if (!webhookUrl) {
-                showNotification('error', '請先完成設定', '請點擊右上角「齒輪」按鈕，設定您的 Make Webhook 網址。');
+                showNotification('error', '請先完成設定', '請點擊右上角「齒輪」，設定您的 Make Webhook 網址。');
                 return;
             }
 
             const starData = calculateStars();
             
-            // 完美符合您 Notion 的資料格式
+            // 自動計算與建立漂亮的兌換標題
+            let finalHighlight = document.getElementById('todayHighlight').value.trim();
+            const rewardValue = rewardPresetSelect.value;
+            
+            if (starData.deductStars > 0) {
+                let rewardName = "";
+                if (rewardValue === 'custom') {
+                    rewardName = customRewardNameInput.value.trim() || "自訂獎勵";
+                } else if (rewardValue !== 'none') {
+                    // 擷取下拉選單選項文字（去除前方的圖示與星星標記）
+                    const selectedText = rewardPresetSelect.options[rewardPresetSelect.selectedIndex].text;
+                    rewardName = selectedText.substring(selectedText.indexOf('】') + 1);
+                } else {
+                    rewardName = "手動扣點";
+                }
+                
+                finalHighlight = `【🎁 兌換：${rewardName} (-${starData.deductStars}⭐)】` + finalHighlight;
+            }
+            
             const formData = {
                 "日期": document.getElementById('logDate').value,
-                "本日亮點": document.getElementById('todayHighlight').value,
+                "本日亮點": finalHighlight,
                 "今日獲得星星": starData.todayTotal,
                 "總累積星星": starData.newTotal,
                 "行為引導": document.getElementById('badBehaviorLog').value.trim(),
                 "讚美事項": document.getElementById('parentNotes').value.trim()
             };
 
-            // 進入 loading 狀態
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 正在傳送至 Notion...';
 
-            // 串接 Make Webhook
             fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -294,22 +365,21 @@
             })
             .then(response => {
                 if (response.ok) {
-                    // 自動更新累計星星的基底
                     localStorage.setItem(STORAGE_KEYS.BASE_STARS, starData.newTotal);
-                    
-                    showNotification('success', '成功上傳！', '軒軒的今日紀錄已成功儲存到 Notion 囉！');
-                    
-                    // 重設表單
+                    showNotification('success', '成功上傳！', '今日紀錄與扣點已同步更新至 Notion！');
                     logForm.reset();
+                    // 重置扣點與自訂區塊
+                    customRewardGroup.classList.add('hidden');
+                    deductStarsInput.readOnly = false;
                     document.getElementById('logDate').valueAsDate = new Date();
                     calculateStars();
                 } else {
-                    throw new Error('伺服器回應錯誤');
+                    throw new Error('伺服器錯誤');
                 }
             })
             .catch(error => {
                 console.error(error);
-                showNotification('error', '傳送失敗', '連線異常，請確認您的 Make Webhook 網址是否正確，且 Make 專案正在啟動狀態。');
+                showNotification('error', '傳送失敗', '請確認 Webhook 網址是否正確或 Make 是否處於啟動狀態。');
             })
             .finally(() => {
                 submitBtn.disabled = false;
@@ -317,7 +387,6 @@
             });
         });
 
-        // 初始執行一次
         loadSettings();
     </script>
 </body>
