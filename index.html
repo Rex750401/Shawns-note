@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⭐ 軒軒的成長筆記-電子登記系統 ⭐</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-amber-50 min-h-screen py-6 px-4 font-sans">
+
+    <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-4 border-orange-400 overflow-hidden">
+        <!-- 頁首 -->
+        <div class="bg-gradient-to-r content-center from-purple-500 to-pink-500 p-6 text-center text-white">
+            <h1 class="text-2xl font-bold tracking-wide">⭐ 軒軒的成長筆記 ⭐</h1>
+            <p class="text-sm opacity-90 mt-1">小小責任家每日電子登記系統</p>
+        </div>
+
+        <!-- 表單開始 -->
+        <form id="logForm" class="p-6 space-y-6">
+            <!-- 日期與本日亮點 -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">選擇日期</label>
+                    <input type="date" id="logDate" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">本日亮點 (Notion標題)</label>
+                    <input type="text" id="todayHighlight" placeholder="例如：自己穿衣大成功！" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none" required>
+                </div>
+            </div>
+
+            <!-- 良好行為勾選區 -->
+            <div>
+                <h2 class="text-lg font-bold text-green-700 mb-3 border-b-2 border-green-200 pb-1">
+                    <i class="fa-solid fa-star text-yellow-500 mr-1"></i> 良好行為紀錄 (完成請勾選)
+                </h2>
+                <div class="space-y-3" id="goodBehaviors">
+                    <!-- 自理項目 -->
+                    <label class="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-100 transition">
+                        <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <span class="ml-3 text-sm font-medium text-gray-700">1. 早上自己穿好衣服 (+1⭐)</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-100 transition">
+                        <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <span class="ml-3 text-sm font-medium text-gray-700">2. 自己刷牙洗臉上廁所 (+1⭐)</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-100 transition">
+                        <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <span class="ml-3 text-sm font-medium text-gray-700">3. 飯後餐具放進水槽 (+1⭐)</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-100 transition">
+                        <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <span class="ml-3 text-sm font-medium text-gray-700">4. 玩完後自己收玩具 (+1⭐)</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-100 transition">
+                        <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <span class="ml-3 text-sm font-medium text-gray-700">5. 將髒衣服放入洗衣籃 (+1⭐)</span>
+                    </label>
+                    <!-- 情緒社交 -->
+                    <label class="flex items-center p-3 bg-pink-50 rounded-xl border border-pink-200 cursor-pointer hover:bg-pink-100 transition">
+                        <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <span class="ml-3 text-sm font-medium text-gray-700">6. 用語言表達需求/沒哭鬧 (+1⭐)</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-pink-50 rounded-xl border border-pink-200 cursor-pointer hover:bg-pink-100 transition">
+                        <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <span class="ml-3 text-sm font-medium text-gray-700">7. 主動說請、謝謝、對不起 (+1⭐)</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-pink-50 rounded-xl border border-pink-200 cursor-pointer hover:bg-pink-100 transition">
+                        <input type="checkbox" value="1" class="behavior-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <span class="ml-3 text-sm font-medium text-gray-700">8. 接受輸了遊戲不發脾氣 (+1⭐)</span>
+                    </label>
+                    <!-- 額外加分 -->
+                    <div class="pt-2">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">額外表現加分（手動輸入星星數）</label>
+                        <input type="number" id="extraStars" min="0" value="0" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 星星即時統計 -->
+            <div class="bg-yellow-100 border-2 border-yellow-300 rounded-xl p-4 flex justify-between items-center">
+                <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-calculator text-amber-500 mr-1"></i> 今日獲得星星：</span>
+                <span id="todayTotal" class="text-3xl font-black text-orange-600">0 ⭐</span>
+            </div>
+
+            <!-- 不當行為引導紀錄 -->
+            <div>
+                <h2 class="text-lg font-bold text-red-700 mb-3 border-b-2 border-red-200 pb-1">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> 今日行為引導 (若無則免填)
+                </h2>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">例如：吃飯玩食物 -> 執行收走後果</label>
+                    <textarea id="badBehaviorLog" rows="2" placeholder="今天有需要引導的地方嗎？" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-red-500 outline-none text-sm"></textarea>
+                </div>
+            </div>
+
+            <!-- 父母讚美與重點 -->
+            <div>
+                <h2 class="text-lg font-bold text-indigo-700 mb-3 border-b-2 border-indigo-200 pb-1">
+                    <i class="fa-solid fa-heart text-pink-500 mr-1"></i> 讚美事項 (對齊 Notion 欄位)
+                </h2>
+                <textarea id="parentNotes" rows="2" placeholder="寫下今天軒軒最棒的地方，這會同步到 Notion 喔！" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 outline-none text-sm"></textarea>
+            </div>
+
+            <!-- 提交按鈕 -->
+            <button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-lg hover:from-purple-600 hover:to-pink-600 transition transform active:scale-95 text-lg">
+                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> 上傳紀錄至 Notion
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // 自動將日期欄位帶入今天
+        document.getElementById('logDate').valueAsDate = new Date();
+
+        // 即時計算星星數量的邏輯
+        const checkboxes = document.querySelectorAll('.behavior-checkbox');
+        const extraStarsInput = document.getElementById('extraStars');
+        const todayTotalDisplay = document.getElementById('todayTotal');
+
+        function calculateStars() {
+            let total = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) total += parseInt(cb.value);
+            });
+            total += parseInt(extraStarsInput.value) || 0;
+            todayTotalDisplay.innerText = total + " ⭐";
+            return total;
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', calculateStars));
+        extraStarsInput.addEventListener('input', calculateStars);
+
+        // 表單提交與對接 Notion API 的區塊
+        document.getElementById('logForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const totalStars = calculateStars();
+            
+            // 這裡的 Key 值已經修改為與您的 Notion 欄位名稱一模一樣！
+            const formData = {
+                "日期": document.getElementById('logDate').value,
+                "本日亮點": document.getElementById('todayHighlight').value,
+                "今日獲得星星": totalStars,
+                "行為引導": document.getElementById('badBehaviorLog').value,
+                "讚美事項": document.getElementById('parentNotes').value
+            };
+
+            alert('正在將資料傳送至 Notion...\n\n傳送內容：' + 
+                  '\n📅 日期: ' + formData["日期"] + 
+                  '\n✨ 本日亮點: ' + formData["本日亮點"] + 
+                  '\n⭐ 今日獲得星星: ' + formData["今日獲得星星"] + ' 顆' +
+                  '\n⚠️ 行為引導: ' + (formData["行為引導"] ? formData["行為引導"] : "無") +
+                  '\n❤️ 讚美事項: ' + (formData["讚美事項"] ? formData["讚美事項"] : "無")
+            );
+
+            /* --- Notion API / Make.com 對接代碼 ---
+               將下面 'YOUR_MAKE_WEBHOOK_URL' 替換成您在 Make.com 申請到的 Webhook 網址即可！
+               
+               fetch('YOUR_MAKE_WEBHOOK_URL', {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify(formData)
+               })
+               .then(res => alert('🎉 成功同步到 軒軒的 Notion 成長筆記！'))
+               .catch(err => alert('❌ 同步失敗，請檢查網路設定。'));
+            */
+        });
+    </script>
+</body>
+</html>
