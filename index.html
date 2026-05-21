@@ -300,14 +300,13 @@
             const deductStars = parseInt(deductStarsInput.value) || 0;
             const netTodayStars = earnStars - deductStars; // 今日淨得 (可能為負數)
             
-            // 網頁前端保持顯示今日淨得 (例如: +5 或 -15) 讓使用者好懂
             todayTotalDisplay.innerText = (netTodayStars >= 0 ? "+" : "") + netTodayStars + " ⭐";
 
             const baseStars = parseInt(localStorage.getItem(STORAGE_KEYS.BASE_STARS)) || 0;
-            const newTotal = baseStars + netTodayStars; // 總累積 = 基準 + 淨得
+            const newTotal = baseStars + netTodayStars;
             predictedTotalDisplay.innerText = newTotal + " ⭐";
 
-            return { earnStars, deductStars, newTotal, netTodayStars };
+            return { todayTotal: netTodayStars, newTotal, deductStars, earnStars };
         }
 
         checkboxes.forEach(cb => cb.addEventListener('change', calculateStars));
@@ -318,72 +317,86 @@
         logForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const webhookUrl = localStorage.getItem(STORAGE_KEYS.WEBHOOK);
-            if (!webhookUrl) {
-                showNotification('error', '請先完成設定', '請點擊右上角「齒輪」，設定您的 Make Webhook 網址。');
-                return;
-            }
-
-            const starData = calculateStars();
-            
-            // 💡 關鍵優化：本日亮點純粹保留使用者所打的內容，不做任何自動字串前置！
-            let finalHighlight = document.getElementById('todayHighlight').value.trim();
-            const rewardValue = rewardPresetSelect.value;
-            let rewardName = "無";
-
-            if (starData.deductStars > 0) {
-                if (rewardValue === 'custom') {
-                    rewardName = customRewardNameInput.value.trim() || "自訂獎勵";
-                } else if (rewardValue !== 'none') {
-                    // 擷取下拉選單選項文字（去除前方的圖示與星星標記）
-                    const selectedText = rewardPresetSelect.options[rewardPresetSelect.selectedIndex].text;
-                    rewardName = selectedText.substring(selectedText.indexOf('】') + 1);
-                } else {
-                    rewardName = "手動扣點";
+            try {
+                const webhookUrl = localStorage.getItem(STORAGE_KEYS.WEBHOOK);
+                if (!webhookUrl) {
+                    showNotification('error', '請先完成設定', '請點擊右上角「齒輪」，設定您的 Make Webhook 網址。');
+                    return;
                 }
-            }
-            
-            const formData = {
-                "日期": document.getElementById('logDate').value,
-                "本日亮點": finalHighlight,         // 🌟 乾淨無瑕的標題！只會顯示您打的 Test333
-                "今日獲得星星": starData.earnStars,
-                "總累積星星": starData.newTotal,
-                "兌換獎勵": rewardName,
-                "扣除星星": starData.deductStars,
-                "行為引導": document.getElementById('badBehaviorLog').value.trim(),
-                "讚美事項": document.getElementById('parentNotes').value.trim()
-            };
 
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 正在傳送至 Notion...';
+                const starData = calculateStars();
+                
+                // 自動計算與建立漂亮的兌換標題
+                let finalHighlight = document.getElementById('todayHighlight').value.trim();
+                const rewardValue = rewardPresetSelect.value;
+                
+                // 💡 修正一：移到 if 外層先做基礎宣告，徹底防止 JS 閃退
+                let rewardName = "無"; 
 
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-            .then(response => {
-                if (response.ok) {
-                    localStorage.setItem(STORAGE_KEYS.BASE_STARS, starData.newTotal);
-                    showNotification('success', '成功上傳！', '今日紀錄與扣點已同步更新至 Notion！');
-                    logForm.reset();
-                    // 重置扣點與自訂區塊
-                    customRewardGroup.classList.add('hidden');
-                    deductStarsInput.readOnly = false;
-                    document.getElementById('logDate').valueAsDate = new Date();
-                    calculateStars();
-                } else {
-                    throw new Error('伺服器錯誤');
+                if (starData.deductStars > 0) {
+                    if (rewardValue === 'custom') {
+                        rewardName = customRewardNameInput.value.trim() || "自訂獎勵";
+                    } else if (rewardValue !== 'none') {
+                        // 擷取下拉選單選項文字（去除前方的圖示與星星標記）
+                        const selectedText = rewardPresetSelect.options[rewardPresetSelect.selectedIndex].text;
+                        rewardName = selectedText.substring(selectedText.indexOf('】') + 1);
+                    } else {
+                        rewardName = "手動扣點";
+                    }
+                    
+                    finalHighlight = `【🎁 兌換：${rewardName} (-${starData.deductStars}⭐)】` + finalHighlight;
                 }
-            })
-            .catch(error => {
+                
+                // 💡 修正二：在此處的打包資料中，新增傳送「兌換獎勵」與「扣除星星」兩個欄位！
+                const formData = {
+                    "日期": document.getElementById('logDate').value,
+                    "本日亮點": finalHighlight,
+                    "今日獲得星星": starData.todayTotal,
+                    "總累積星星": starData.newTotal,
+                    "兌換獎勵": rewardName,
+                    "扣除星星": starData.deductStars,
+                    "行為引導": document.getElementById('badBehaviorLog').value.trim(),
+                    "讚美事項": document.getElementById('parentNotes').value.trim()
+                };
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 正在傳送至 Notion...';
+
+                fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        localStorage.setItem(STORAGE_KEYS.BASE_STARS, starData.newTotal);
+                        showNotification('success', '成功上傳！', '今日紀錄與扣點已同步更新至 Notion！');
+                        logForm.reset();
+                        // 重置扣點與自訂區塊
+                        customRewardGroup.classList.add('hidden');
+                        deductStarsInput.readOnly = false;
+                        document.getElementById('logDate').valueAsDate = new Date();
+                        calculateStars();
+                    } else {
+                        throw new Error('伺服器連接異常，請確認 Make 工作區是否開啟。');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    showNotification('error', '傳送失敗', '請確認 Webhook 網址是否正確，且您已連上網路。');
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> 上傳紀錄至 Notion';
+                });
+
+            } catch (error) {
+                // 💡 修正三：若有任何隱藏版 JS 錯誤直接彈出紅色警告，不默默死機
                 console.error(error);
-                showNotification('error', '傳送失敗', '請確認 Webhook 網址是否正確或 Make 是否處於啟動狀態。');
-            })
-            .finally(() => {
+                showNotification('error', '系統執行出錯', error.message);
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> 上傳紀錄至 Notion';
-            });
+            }
         });
 
         loadSettings();
