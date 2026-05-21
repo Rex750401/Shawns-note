@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -300,13 +300,14 @@
             const deductStars = parseInt(deductStarsInput.value) || 0;
             const netTodayStars = earnStars - deductStars; // 今日淨得 (可能為負數)
             
+            // 網頁前端保持顯示今日淨得 (例如: +5 或 -15) 讓使用者好懂
             todayTotalDisplay.innerText = (netTodayStars >= 0 ? "+" : "") + netTodayStars + " ⭐";
 
             const baseStars = parseInt(localStorage.getItem(STORAGE_KEYS.BASE_STARS)) || 0;
-            const newTotal = baseStars + netTodayStars;
+            const newTotal = baseStars + netTodayStars; // 總累積 = 基準 + 淨得
             predictedTotalDisplay.innerText = newTotal + " ⭐";
 
-            return { todayTotal: netTodayStars, newTotal, deductStars };
+            return { earnStars, deductStars, newTotal, netTodayStars };
         }
 
         checkboxes.forEach(cb => cb.addEventListener('change', calculateStars));
@@ -325,10 +326,10 @@
 
             const starData = calculateStars();
             
-            // 自動計算與建立漂亮的兌換標題
+            // 💡 關鍵優化：本日亮點純粹保留使用者所打的內容，不做任何自動字串前置！
             let finalHighlight = document.getElementById('todayHighlight').value.trim();
             const rewardValue = rewardPresetSelect.value;
-            let rewardName = "無"; // 💡 修正一：移到最外層宣告，防止 JavaScript 閃退
+            let rewardName = "無";
 
             if (starData.deductStars > 0) {
                 if (rewardValue === 'custom') {
@@ -340,15 +341,12 @@
                 } else {
                     rewardName = "手動扣點";
                 }
-                
-                finalHighlight = `【🎁 兌換：${rewardName} (-${starData.deductStars}⭐)】` + finalHighlight;
             }
             
-            // 💡 修正二：在此處的 formData 裡正式追加「兌換獎勵」與「扣除星星」！
             const formData = {
                 "日期": document.getElementById('logDate').value,
-                "本日亮點": finalHighlight,
-                "今日獲得星星": starData.todayTotal,
+                "本日亮點": finalHighlight,         // 🌟 乾淨無瑕的標題！只會顯示您打的 Test333
+                "今日獲得星星": starData.earnStars,
                 "總累積星星": starData.newTotal,
                 "兌換獎勵": rewardName,
                 "扣除星星": starData.deductStars,
