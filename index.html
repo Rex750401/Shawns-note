@@ -326,11 +326,10 @@
 
                 const starData = calculateStars();
                 
-                // 自動計算與建立漂亮的兌換標題
+                // 💡 修正一：讓「本日亮點」完全保持乾淨！使用者打什麼就傳什麼，不要再額外加上【🎁 兌換...】
                 let finalHighlight = document.getElementById('todayHighlight').value.trim();
                 const rewardValue = rewardPresetSelect.value;
                 
-                // 💡 修正一：移到 if 外層先做基礎宣告，徹底防止 JS 閃退
                 let rewardName = "無"; 
 
                 if (starData.deductStars > 0) {
@@ -344,15 +343,18 @@
                         rewardName = "手動扣點";
                     }
                     
-                    finalHighlight = `【🎁 兌換：${rewardName} (-${starData.deductStars}⭐)】` + finalHighlight;
+                    // ❌ 刪除原本會自動修改並前置在 finalHighlight 的舊有文字字串合併，保持標題極度清爽！
                 }
                 
-                // 💡 修正二：在此處的打包資料中，新增傳送「兌換獎勵」與「扣除星星」兩個欄位！
+                // 💡 修正二：
+                // 1. "今日獲得星星" 改為只傳送當天實際獲得的星星 (starData.earnStars)，而不再傳送相減後的負值。
+                // 2. 今日兌換扣除星星依然單獨由 "扣除星星" 紀錄 (starData.deductStars)。
+                // 這樣在 Notion 報表中分析與統計時，數值才會最為精準且合乎常理！
                 const formData = {
                     "日期": document.getElementById('logDate').value,
-                    "本日亮點": finalHighlight,
-                    "今日獲得星星": starData.todayTotal,
-                    "總累積星星": starData.newTotal,
+                    "本日亮點": finalHighlight,         // 🌟 乾淨無瑕的標題！
+                    "今日獲得星星": starData.earnStars,  // 🌟 只記錄當天實際賺取的星星數 (正數)
+                    "總累積星星": starData.newTotal,    // 總和自動加減 (基準 + 賺取 - 扣除)
                     "兌換獎勵": rewardName,
                     "扣除星星": starData.deductStars,
                     "行為引導": document.getElementById('badBehaviorLog').value.trim(),
@@ -391,7 +393,6 @@
                 });
 
             } catch (error) {
-                // 💡 修正三：若有任何隱藏版 JS 錯誤直接彈出紅色警告，不默默死機
                 console.error(error);
                 showNotification('error', '系統執行出錯', error.message);
                 submitBtn.disabled = false;
