@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <!-- 獎勵兌換扣點區 (已修改為最新獎勵清單) -->
+            <!-- 獎勵兌換扣點區 -->
             <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 space-y-3">
                 <h3 class="text-md font-bold text-red-700 flex items-center">
                     <i class="fa-solid fa-gift mr-1.5 text-red-500"></i> 🎁 獎勵兌換與扣點設定
@@ -96,11 +96,9 @@
                         <select id="rewardPreset" class="w-full p-2 border-2 border-red-300 rounded-lg focus:border-red-500 outline-none bg-white text-sm">
                             <option value="none" data-stars="0">-- 今天沒有兌換獎勵 --</option>
                             
-                            <!-- 💡 提示：若您未來想增刪項目，只需複製下方任一行，並修改 data-stars(扣星數) 與文字內容即可 -->
                             <optgroup label="✨ 小獎勵 (5-15 顆星)">
-                                
                                 <option value="snack" data-stars="10">🍬 【10⭐】兌換一份美味小點心</option>
-                                <option value="cartoon" data-stars="10">📺 【15⭐】看 15 分鐘 IPAD/電視</option>
+                                <option value="cartoon" data-stars="15">📺 【15⭐】看 15 分鐘 IPAD/電視</option>
                                 <option value="icecream" data-stars="15">🍦 【15⭐】兌換一球冰淇淋</option>
                                 <option value="toy_small" data-stars="15">🚗 【15⭐】兌換一份小玩具</option>
                             </optgroup>
@@ -330,9 +328,9 @@
             // 自動計算與建立漂亮的兌換標題
             let finalHighlight = document.getElementById('todayHighlight').value.trim();
             const rewardValue = rewardPresetSelect.value;
-            
+            let rewardName = "無"; // ✨ 修正一：移到外層宣告，確保傳送資料拿得到
+
             if (starData.deductStars > 0) {
-                let rewardName = "";
                 if (rewardValue === 'custom') {
                     rewardName = customRewardNameInput.value.trim() || "自訂獎勵";
                 } else if (rewardValue !== 'none') {
@@ -346,11 +344,14 @@
                 finalHighlight = `【🎁 兌換：${rewardName} (-${starData.deductStars}⭐)】` + finalHighlight;
             }
             
+            // ✨ 修正二：在此處的 formData 裡正式追加「兌換獎勵」與「扣除星星」的資料！
             const formData = {
                 "日期": document.getElementById('logDate').value,
                 "本日亮點": finalHighlight,
                 "今日獲得星星": starData.todayTotal,
                 "總累積星星": starData.newTotal,
+                "兌換獎勵": rewardName,
+                "扣除星星": starData.deductStars,
                 "行為引導": document.getElementById('badBehaviorLog').value.trim(),
                 "讚美事項": document.getElementById('parentNotes').value.trim()
             };
