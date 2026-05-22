@@ -39,7 +39,7 @@
                 </div>
             </div>
 
-            <!-- 良好行為勾選區 -->
+            <!-- 良好行為勾選區 (8項一字不漏完整保留) -->
             <div>
                 <h2 class="text-lg font-bold text-green-700 mb-3 border-b-2 border-green-200 pb-1">
                     <i class="fa-solid fa-star text-yellow-500 mr-1"></i> 良好行為紀錄 (完成請勾選)
@@ -84,7 +84,31 @@
                 </div>
             </div>
 
-            <!-- 獎勵兌換扣點區 -->
+            <!-- 📸 本日精彩相片上傳區 (新增) -->
+            <div class="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-4 space-y-3">
+                <h3 class="text-md font-bold text-indigo-700 flex items-center">
+                    <i class="fa-solid fa-camera mr-1.5 text-indigo-500"></i> 📸 本日精彩相片 (自動設定封面)
+                </h3>
+                <div class="space-y-2">
+                    <label class="block text-xs text-gray-500 mb-1">上傳軒軒今天最棒的精彩瞬間照片</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="file" id="imageFile" accept="image/*" class="hidden">
+                        <button type="button" id="uploadBtn" class="px-4 py-2 bg-indigo-100 border border-indigo-300 rounded-lg text-sm text-indigo-700 font-bold hover:bg-indigo-200 transition">
+                            <i class="fa-solid fa-image mr-1"></i> 選擇照片
+                        </button>
+                        <span id="fileNameDisplay" class="text-xs text-gray-400 truncate max-w-[150px]">尚未選擇檔案</span>
+                    </div>
+                    <!-- 預覽圖區塊 -->
+                    <div id="imagePreviewContainer" class="hidden mt-2 relative w-full h-32 rounded-lg overflow-hidden border border-indigo-200 bg-gray-100 flex items-center justify-center">
+                        <img id="imagePreview" class="max-h-full max-w-full object-contain">
+                        <button type="button" id="clearImageBtn" class="absolute top-1 right-1 w-6 h-6 bg-black/60 rounded-full text-white flex items-center justify-center hover:bg-black text-xs">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 獎勵兌換扣點區 (原始選項一字不漏完整保留) -->
             <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 space-y-3">
                 <h3 class="text-md font-bold text-red-700 flex items-center">
                     <i class="fa-solid fa-gift mr-1.5 text-red-500"></i> 🎁 獎勵兌換與扣點設定
@@ -114,7 +138,7 @@
                         </select>
                     </div>
 
-                    <!-- 自訂獎勵輸入框 (選擇自訂時顯示) -->
+                    <!-- 自訂獎勵輸入框 -->
                     <div id="customRewardGroup" class="hidden">
                         <label class="block text-xs font-bold text-gray-600 mb-1">自訂獎勵名稱</label>
                         <input type="text" id="customRewardName" placeholder="例如：去便利商店買軟糖" class="w-full p-2 border-2 border-red-300 rounded-lg focus:border-red-500 outline-none text-sm bg-white">
@@ -130,7 +154,7 @@
             <!-- 星星與總累積即時統計 -->
             <div class="space-y-2">
                 <div class="bg-yellow-100 border-2 border-yellow-300 rounded-xl p-4 flex justify-between items-center">
-                    <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-calculator text-amber-500 mr-1"></i> 今日淨得星星：</span>
+                    <span class="text-md font-bold text-gray-700"><i class="fa-solid fa-calculator text-amber-500 mr-1"></i> 今日獲得星星：</span>
                     <span id="todayTotal" class="text-3xl font-black text-orange-600">0 ⭐</span>
                 </div>
                 <div class="bg-blue-100 border-2 border-blue-300 rounded-xl p-4 flex justify-between items-center">
@@ -164,14 +188,14 @@
         </form>
     </div>
 
-    <!-- 設定彈窗 -->
+    <!-- 設定彈窗 (含 Webhook、ImgBB API Key、基底星數) -->
     <div id="settingsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 border-4 border-purple-400">
             <div class="flex justify-between items-center mb-4 pb-2 border-b">
                 <h3 class="text-lg font-bold text-purple-700"><i class="fa-solid fa-gears mr-1"></i> 系統連線設定</h3>
                 <button id="closeSettings" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="space-y-4">
+            <div class="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">Make Webhook 網址</label>
                     <input type="text" id="webhookUrl" placeholder="https://hook.us1.make.com/..." class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none text-xs">
@@ -179,6 +203,15 @@
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">目前已累積星星數 (基準)</label>
                     <input type="number" id="baseStars" min="0" value="0" class="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 outline-none">
+                </div>
+                <div class="border-t pt-3">
+                    <label class="block text-sm font-bold text-indigo-700 mb-1 flex items-center">
+                        <i class="fa-solid fa-key mr-1"></i> ImgBB API Key (圖片上傳金鑰)
+                    </label>
+                    <input type="text" id="imgbbKey" placeholder="請貼入您在 ImgBB 註冊得到的金鑰..." class="w-full p-2 border-2 border-indigo-300 rounded-lg focus:border-indigo-500 outline-none text-xs">
+                    <p class="text-[10px] text-gray-400 mt-1 leading-relaxed">
+                        請至 <a href="https://api.imgbb.com/" target="_blank" class="text-indigo-500 underline font-bold">api.imgbb.com</a> 取得金鑰。設定後即可支援「一鍵上傳卡片封面圖」！
+                    </p>
                 </div>
                 <button id="saveSettings" class="w-full py-2 bg-purple-600 text-white font-bold rounded-lg shadow hover:bg-purple-700 transition">
                     儲存設定
@@ -204,7 +237,8 @@
 
         const STORAGE_KEYS = {
             WEBHOOK: 'xuan_webhook_url',
-            BASE_STARS: 'xuan_base_stars'
+            BASE_STARS: 'xuan_base_stars',
+            IMGBB_KEY: 'xuan_imgbb_key'
         };
 
         const openSettingsBtn = document.getElementById('openSettings');
@@ -212,6 +246,7 @@
         const settingsModal = document.getElementById('settingsModal');
         const webhookInput = document.getElementById('webhookUrl');
         const baseStarsInput = document.getElementById('baseStars');
+        const imgbbKeyInput = document.getElementById('imgbbKey');
         const saveSettingsBtn = document.getElementById('saveSettings');
 
         const notifModal = document.getElementById('notifModal');
@@ -224,6 +259,14 @@
         const checkboxes = document.querySelectorAll('.behavior-checkbox');
         const extraStarsInput = document.getElementById('extraStars');
         
+        // 圖片上傳控制元素
+        const imageFileInput = document.getElementById('imageFile');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const clearImageBtn = document.getElementById('clearImageBtn');
+
         // 兌換獎勵連動元素
         const rewardPresetSelect = document.getElementById('rewardPreset');
         const customRewardGroup = document.getElementById('customRewardGroup');
@@ -238,6 +281,7 @@
         function loadSettings() {
             webhookInput.value = localStorage.getItem(STORAGE_KEYS.WEBHOOK) || '';
             baseStarsInput.value = localStorage.getItem(STORAGE_KEYS.BASE_STARS) || '0';
+            imgbbKeyInput.value = localStorage.getItem(STORAGE_KEYS.IMGBB_KEY) || '';
             calculateStars();
         }
 
@@ -247,9 +291,10 @@
         saveSettingsBtn.addEventListener('click', () => {
             localStorage.setItem(STORAGE_KEYS.WEBHOOK, webhookInput.value.trim());
             localStorage.setItem(STORAGE_KEYS.BASE_STARS, baseStarsInput.value || '0');
+            localStorage.setItem(STORAGE_KEYS.IMGBB_KEY, imgbbKeyInput.value.trim());
             settingsModal.classList.add('hidden');
             calculateStars();
-            showNotification('success', '設定已儲存', '您的連線與點數基準已成功更新。');
+            showNotification('success', '設定已儲存', '您的連線、點數與圖片上傳金鑰已成功更新！');
         });
 
         function showNotification(type, title, message) {
@@ -269,18 +314,39 @@
 
         closeNotifBtn.addEventListener('click', () => notifModal.classList.add('hidden'));
 
+        // 圖片預覽控制
+        uploadBtn.addEventListener('click', () => imageFileInput.click());
+        
+        imageFileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                fileNameDisplay.innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreviewContainer.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        clearImageBtn.addEventListener('click', function() {
+            imageFileInput.value = '';
+            fileNameDisplay.innerText = '尚未選擇檔案';
+            imagePreview.src = '';
+            imagePreviewContainer.classList.add('hidden');
+        });
+
         // 獎勵選單變動處理
         rewardPresetSelect.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
             const autoStars = parseInt(selectedOption.getAttribute('data-stars')) || 0;
             
             if (this.value === 'custom') {
-                // 顯示自訂輸入欄位
                 customRewardGroup.classList.remove('hidden');
                 deductStarsInput.value = 0;
                 deductStarsInput.readOnly = false;
             } else {
-                // 隱藏自訂輸入欄位並自動帶入數值
                 customRewardGroup.classList.add('hidden');
                 customRewardNameInput.value = '';
                 deductStarsInput.value = autoStars;
@@ -289,7 +355,7 @@
             calculateStars();
         });
 
-        // 星星即時計算 (賺取 - 扣除)
+        // 星星即時計算 (獲得 - 扣除)
         function calculateStars() {
             let earnStars = 0;
             checkboxes.forEach(cb => {
@@ -298,15 +364,15 @@
             earnStars += parseInt(extraStarsInput.value) || 0;
             
             const deductStars = parseInt(deductStarsInput.value) || 0;
-            const netTodayStars = earnStars - deductStars; // 今日淨得 (可能為負數)
-            
+            const netTodayStars = earnStars - deductStars; // 今日淨值
+
             todayTotalDisplay.innerText = (netTodayStars >= 0 ? "+" : "") + netTodayStars + " ⭐";
 
             const baseStars = parseInt(localStorage.getItem(STORAGE_KEYS.BASE_STARS)) || 0;
-            const newTotal = baseStars + netTodayStars;
+            const newTotal = baseStars + netTodayStars; // 總累積
             predictedTotalDisplay.innerText = newTotal + " ⭐";
 
-            return { todayTotal: netTodayStars, newTotal, deductStars, earnStars };
+            return { earnStars, deductStars, newTotal, netTodayStars };
         }
 
         checkboxes.forEach(cb => cb.addEventListener('change', calculateStars));
@@ -314,87 +380,108 @@
         deductStarsInput.addEventListener('input', calculateStars);
 
         // 表單提交
-        logForm.addEventListener('submit', function(e) {
+        logForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
+            const webhookUrl = localStorage.getItem(STORAGE_KEYS.WEBHOOK);
+            if (!webhookUrl) {
+                showNotification('error', '請先完成設定', '請點擊右上角「齒輪」，設定您的 Make Webhook 網址。');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 正在傳送...';
+
             try {
-                const webhookUrl = localStorage.getItem(STORAGE_KEYS.WEBHOOK);
-                if (!webhookUrl) {
-                    showNotification('error', '請先完成設定', '請點擊右上角「齒輪」，設定您的 Make Webhook 網址。');
-                    return;
+                const starData = calculateStars();
+                const file = imageFileInput.files[0];
+                let imageUrl = "";
+
+                // 1. 若有選擇檔案，自動上傳至 ImgBB
+                if (file) {
+                    const imgbbKey = localStorage.getItem(STORAGE_KEYS.IMGBB_KEY);
+                    if (!imgbbKey) {
+                        showNotification('error', '未設定圖片金鑰', '請先在「齒輪 ⚙️」中設定您的 ImgBB API Key，才能順利自動上傳照片封面圖。');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> 上傳紀錄至 Notion';
+                        return;
+                    }
+
+                    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 正在上傳精彩照片...';
+
+                    const imgFormData = new FormData();
+                    imgFormData.append('image', file);
+
+                    const imgResponse = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
+                        method: 'POST',
+                        body: imgFormData
+                    });
+                    const imgResult = await imgResponse.json();
+                    if (imgResult.success) {
+                        imageUrl = imgResult.data.url;
+                    } else {
+                        throw new Error('相簿伺服器錯誤，請檢查您的金鑰是否輸入正確。');
+                    }
                 }
 
-                const starData = calculateStars();
-                
-                // 💡 修正一：讓「本日亮點」完全保持乾淨！使用者打什麼就傳什麼，不要再額外加上【🎁 兌換...】
-                let finalHighlight = document.getElementById('todayHighlight').value.trim();
+                // 2. 資料欄位拼裝 (今日獲得星星獨立為「正值」，扣除星星單獨統計，標題保持純淨)
+                submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 正在上傳至 Notion...';
+
+                const finalHighlight = document.getElementById('todayHighlight').value.trim();
                 const rewardValue = rewardPresetSelect.value;
-                
-                let rewardName = "無"; 
+                let rewardName = "無";
 
                 if (starData.deductStars > 0) {
                     if (rewardValue === 'custom') {
                         rewardName = customRewardNameInput.value.trim() || "自訂獎勵";
                     } else if (rewardValue !== 'none') {
-                        // 擷取下拉選單選項文字（去除前方的圖示與星星標記）
                         const selectedText = rewardPresetSelect.options[rewardPresetSelect.selectedIndex].text;
                         rewardName = selectedText.substring(selectedText.indexOf('】') + 1);
                     } else {
                         rewardName = "手動扣點";
                     }
-                    
-                    // ❌ 刪除原本會自動修改並前置在 finalHighlight 的舊有文字字串合併，保持標題極度清爽！
                 }
-                
-                // 💡 修正二：
-                // 1. "今日獲得星星" 改為只傳送當天實際獲得的星星 (starData.earnStars)，而不再傳送相減後的負值。
-                // 2. 今日兌換扣除星星依然單獨由 "扣除星星" 紀錄 (starData.deductStars)。
-                // 這樣在 Notion 報表中分析與統計時，數值才會最為精準且合乎常理！
+
                 const formData = {
                     "日期": document.getElementById('logDate').value,
-                    "本日亮點": finalHighlight,         // 🌟 乾淨無瑕的標題！
-                    "今日獲得星星": starData.earnStars,  // 🌟 只記錄當天實際賺取的星星數 (正數)
-                    "總累積星星": starData.newTotal,    // 總和自動加減 (基準 + 賺取 - 扣除)
+                    "本日亮點": finalHighlight,
+                    "今日獲得星星": starData.earnStars, // 🌟 淨利歸淨利，獲得歸獲得(正數)
+                    "總累積星星": starData.newTotal,   // 完美計算總量
                     "兌換獎勵": rewardName,
                     "扣除星星": starData.deductStars,
                     "行為引導": document.getElementById('badBehaviorLog').value.trim(),
-                    "讚美事項": document.getElementById('parentNotes').value.trim()
+                    "讚美事項": document.getElementById('parentNotes').value.trim(),
+                    "圖片網址": imageUrl
                 };
 
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 正在傳送至 Notion...';
-
-                fetch(webhookUrl, {
+                const response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
-                })
-                .then(response => {
-                    if (response.ok) {
-                        localStorage.setItem(STORAGE_KEYS.BASE_STARS, starData.newTotal);
-                        showNotification('success', '成功上傳！', '今日紀錄與扣點已同步更新至 Notion！');
-                        logForm.reset();
-                        // 重置扣點與自訂區塊
-                        customRewardGroup.classList.add('hidden');
-                        deductStarsInput.readOnly = false;
-                        document.getElementById('logDate').valueAsDate = new Date();
-                        calculateStars();
-                    } else {
-                        throw new Error('伺服器連接異常，請確認 Make 工作區是否開啟。');
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    showNotification('error', '傳送失敗', '請確認 Webhook 網址是否正確，且您已連上網路。');
-                })
-                .finally(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> 上傳紀錄至 Notion';
                 });
+
+                if (response.ok) {
+                    localStorage.setItem(STORAGE_KEYS.BASE_STARS, starData.newTotal);
+                    showNotification('success', '成功上傳！', '今日紀錄與相片封面已成功同步至 Notion！');
+                    logForm.reset();
+                    
+                    // 重置扣點與預覽
+                    customRewardGroup.classList.add('hidden');
+                    deductStarsInput.readOnly = false;
+                    imageFileInput.value = '';
+                    fileNameDisplay.innerText = '尚未選擇檔案';
+                    imagePreview.src = '';
+                    imagePreviewContainer.classList.add('hidden');
+                    document.getElementById('logDate').valueAsDate = new Date();
+                    calculateStars();
+                } else {
+                    throw new Error('Notion 串接伺服器錯誤，請確認 Make.com 專案已開啟。');
+                }
 
             } catch (error) {
                 console.error(error);
-                showNotification('error', '系統執行出錯', error.message);
+                showNotification('error', '執行異常', error.message || '請確認您的網路狀況。');
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> 上傳紀錄至 Notion';
             }
